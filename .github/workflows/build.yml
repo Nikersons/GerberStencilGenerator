@@ -31,7 +31,7 @@ jobs:
           powershell Compress-Archive -Path release\* -DestinationPath GerberStencilGenerator.zip
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: GerberStencilGenerator
           path: GerberStencilGenerator.zip
