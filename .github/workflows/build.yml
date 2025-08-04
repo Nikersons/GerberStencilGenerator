@@ -1,0 +1,37 @@
+name: Build GerberStencilGenerator
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '5.15.2'
+          target: 'desktop'
+          arch: 'win64_mingw81'
+
+      - name: Build with qmake
+        run: |
+          qmake GerberStencilGenerator.pro
+          mingw32-make
+
+      - name: Deploy executable
+        run: |
+          windeployqt release\GerberStencilGenerator.exe
+          powershell Compress-Archive -Path release\* -DestinationPath GerberStencilGenerator.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: GerberStencilGenerator
+          path: GerberStencilGenerator.zip
